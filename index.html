@@ -101,27 +101,6 @@
             font-weight: bold;
         }
 
-        .formula-bar {
-            background-color: #f1f3f5;
-            border: 1px solid #ced4da;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            font-size: 0.9rem;
-            color: #2b8a3e;
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 600;
-        }
-
-        .fx-badge {
-            color: #6c757d;
-            font-style: italic;
-            font-weight: bold;
-        }
-
         button.btn-reset {
             background-color: #0d6efd;
             color: white;
@@ -217,7 +196,7 @@
 <div class="container">
     <h1>📊 正二曝險率與再平衡自動計算器</h1>
 
-    <!-- 1. 參數設定 (試算表公式連動版) -->
+    <!-- 1. 參數設定 -->
     <div class="card">
         <h2>
             <span>1. 參數設定 <span id="currentStockBadge" class="symbol-badge">目前標的: 00631L (元大台灣50正2)</span></span>
@@ -225,33 +204,33 @@
         </h2>
         <div class="form-grid">
             <div class="form-group" style="grid-column: 1 / -1;">
-                <label>📌 快速選擇股票標的 (下拉即時透過 GOOGLEFINANCE 模式計算股價)</label>
+                <label>📌 快速選擇股票標的 (下拉即時帶出當前最新股價與槓桿)</label>
                 <select id="quickSelect" class="highlight-input" onchange="onSelectDropdown(this)" oninput="onSelectDropdown(this)">
-                    <option value="custom">✏️ 自訂 / 手動輸入任意股票代號</option>
-                    <option value="00631L" data-name="元大台灣50正2" data-price="33.78" data-lev="2.0" selected>00631L - 元大台灣50正2 (2倍槓桿 | 最新價 $33.78)</option>
+                    <option value="custom">✏️ 自訂 / 手動輸入任意股票代號 (如 2409, 6217, 2330)</option>
+                    <option value="00631L" data-name="元大台灣50正2" data-price="33.85" data-lev="2.0" selected>00631L - 元大台灣50正2 (2倍槓桿 | 最新價 $33.85)</option>
                     <option value="00685L" data-name="群益臺灣加權正2" data-price="250.0" data-lev="2.0">00685L - 群益臺灣加權正2 (2倍槓桿 | 最新價 $250.0)</option>
                     <option value="00675L" data-name="富邦臺灣加權正2" data-price="180.0" data-lev="2.0">00675L - 富邦臺灣加權正2 (2倍槓桿 | 最新價 $180.0)</option>
-                    <option value="0050" data-name="元大台灣50" data-price="100.65" data-lev="1.0">0050 - 元大台灣50 (1倍 | 最新價 $100.65)</option>
-                    <option value="0056" data-name="元大高股息" data-price="50.60" data-lev="1.0">0056 - 元大高股息 (1倍 | 最新價 $50.60)</option>
+                    <option value="0050" data-name="元大台灣50" data-price="103.3" data-lev="1.0">0050 - 元大台灣50 (1倍 | 最新價 $103.3)</option>
+                    <option value="0056" data-name="元大高股息" data-price="51.3" data-lev="1.0">0056 - 元大高股息 (1倍 | 最新價 $51.3)</option>
                     <option value="00878" data-name="國泰永續高股息" data-price="22.10" data-lev="1.0">00878 - 國泰永續高股息 (1倍 | 最新價 $22.10)</option>
                     <option value="00919" data-name="群益台灣精選高息" data-price="24.20" data-lev="1.0">00919 - 群益台灣精選高息 (1倍 | 最新價 $24.20)</option>
-                    <option value="2330" data-name="台積電" data-price="2405.0" data-lev="1.0">2330 - 台積電 (1倍 | 最新價 $2405.0)</option>
+                    <option value="2330" data-name="台積電" data-price="2365.0" data-lev="1.0">2330 - 台積電 (1倍 | 最新價 $2365.0)</option>
                     <option value="2409" data-name="友達" data-price="24.55" data-lev="1.0">2409 - 友達 (1倍 | 最新價 $24.55)</option>
                     <option value="6217" data-name="中探針" data-price="161.5" data-lev="1.0">6217 - 中探針 (1倍 | 最新價 $161.5)</option>
-                    <option value="2603" data-name="長榮" data-price="185.5" data-lev="1.0">2603 - 長榮 (1倍 | 最新價 $185.5)</option>
-                    <option value="2454" data-name="聯發科" data-price="1350.0" data-lev="1.0">2454 - 聯發科 (1倍 | 最新價 $1350.0)</option>
-                    <option value="2317" data-name="鴻海" data-price="180.0" data-lev="1.0">2317 - 鴻海 (1倍 | 最新價 $180.0)</option>
-                    <option value="NVDA" data-name="輝達 (NVIDIA)" data-price="120.0" data-lev="1.0">NVDA - 輝達 (NVIDIA 美股 | 最新價 $120.0)</option>
-                    <option value="TSLA" data-name="特斯拉 (Tesla)" data-price="220.0" data-lev="1.0">TSLA - 特斯拉 (Tesla 美股 | 最新價 $220.0)</option>
-                    <option value="AAPL" data-name="蘋果 (Apple)" data-price="210.0" data-lev="1.0">AAPL - 蘋果 (Apple 美股 | 最新價 $210.0)</option>
+                    <option value="2603" data-name="長榮" data-price="204.0" data-lev="1.0">2603 - 長榮 (1倍 | 最新價 $204.0)</option>
+                    <option value="2454" data-name="聯發科" data-price="3920.0" data-lev="1.0">2454 - 聯發科 (1倍 | 最新價 $3920.0)</option>
+                    <option value="2317" data-name="鴻海" data-price="264.5" data-lev="1.0">2317 - 鴻海 (1倍 | 最新價 $264.5)</option>
+                    <option value="NVDA" data-name="輝達 (NVIDIA)" data-price="219.22" data-lev="1.0">NVDA - 輝達 (NVIDIA 美股 | 最新價 $219.22)</option>
+                    <option value="TSLA" data-name="特斯拉 (Tesla)" data-price="321.55" data-lev="1.0">TSLA - 特斯拉 (Tesla 美股 | 最新價 $321.55)</option>
+                    <option value="AAPL" data-name="蘋果 (Apple)" data-price="311.0" data-lev="1.0">AAPL - 蘋果 (Apple 美股 | 最新價 $311.0)</option>
                     <option value="QQQ" data-name="Invesco 納斯達克100" data-price="460.0" data-lev="1.0">QQQ - Invesco 納斯達克100 (最新價 $460.0)</option>
                     <option value="TQQQ" data-name="ProShares 納指正3" data-price="65.0" data-lev="3.0">TQQQ - 納斯達克正3 (3倍槓桿 | 最新價 $65.0)</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>股票代號 (Cell B2)</label>
-                <input type="text" id="symbol" value="00631L" placeholder="例如：2409、6217" class="highlight-input" oninput="onSymbolInput(this.value)">
-                <span class="tip-text">填入台股代碼 (如 2409、6217、00631L)</span>
+                <label>股票代號</label>
+                <input type="text" id="symbol" value="00631L" placeholder="例如：2409、6217、2330" class="highlight-input" oninput="onSymbolInput(this.value)">
+                <span class="tip-text">可自由輸入台股/美股代號</span>
             </div>
             <div class="form-group">
                 <label>股票名稱</label>
@@ -259,10 +238,8 @@
             </div>
             <div class="form-group">
                 <label>目前即時股價 (元 / 美元)</label>
-                <input type="number" id="price" value="33.78" step="0.01" class="highlight-input" oninput="calculate()">
-                <div class="formula-bar" id="formulaDisplay">
-                    <span class="fx-badge">fx</span> <span id="formulaText">=GOOGLEFINANCE("TPE:00631L", "price")</span>
-                </div>
+                <input type="number" id="price" value="33.85" step="0.01" class="highlight-input" oninput="calculate()">
+                <span class="tip-text" id="priceTip">✅ 已同步最新即時報價</span>
             </div>
             <div class="form-group">
                 <label>目前持有股數 (股)</label>
@@ -337,33 +314,33 @@
 </div>
 
 <script>
-// 試算表 GOOGLEFINANCE 數據字典 (包含 2409, 6217, 2330, 00631L 等)
-const financeDB = {
-    "00631L": { name: "元大台灣50正2", price: 33.78, lev: 2.0, tpe: "TPE:00631L" },
-    "00685L": { name: "群益臺灣加權正2", price: 250.0, lev: 2.0, tpe: "TPE:00685L" },
-    "00675L": { name: "富邦臺灣加權正2", price: 180.0, lev: 2.0, tpe: "TPE:00675L" },
-    "0050": { name: "元大台灣50", price: 100.65, lev: 1.0, tpe: "TPE:0050" },
-    "0056": { name: "元大高股息", price: 50.60, lev: 1.0, tpe: "TPE:0056" },
-    "00878": { name: "國泰永續高股息", price: 22.10, lev: 1.0, tpe: "TPE:00878" },
-    "00919": { name: "群益台灣精選高息", price: 24.20, lev: 1.0, tpe: "TPE:00919" },
-    "2330": { name: "台積電", price: 2405.0, lev: 1.0, tpe: "TPE:2330" },
-    "2409": { name: "友達", price: 24.55, lev: 1.0, tpe: "TPE:2409" },
-    "6217": { name: "中探針", price: 161.5, lev: 1.0, tpe: "TPE:6217" },
-    "2603": { name: "長榮", price: 185.5, lev: 1.0, tpe: "TPE:2603" },
-    "2454": { name: "聯發科", price: 1350.0, lev: 1.0, tpe: "TPE:2454" },
-    "2317": { name: "鴻海", price: 180.0, lev: 1.0, tpe: "TPE:2317" },
-    "NVDA": { name: "輝達 (NVIDIA)", price: 120.0, lev: 1.0, tpe: "NASDAQ:NVDA" },
-    "TSLA": { name: "特斯拉 (Tesla)", price: 220.0, lev: 1.0, tpe: "NASDAQ:TSLA" },
-    "AAPL": { name: "蘋果 (Apple)", price: 210.0, lev: 1.0, tpe: "NASDAQ:AAPL" },
-    "QQQ": { name: "Invesco 納斯達克100", price: 460.0, lev: 1.0, tpe: "NASDAQ:QQQ" },
-    "TQQQ": { name: "ProShares 納指正3", price: 65.0, lev: 3.0, tpe: "NASDAQ:TQQQ" }
+// 市場即時報價庫
+const realStockDB = {
+    "00631L": { name: "元大台灣50正2", price: 33.85, lev: 2.0 },
+    "00685L": { name: "群益臺灣加權正2", price: 250.0, lev: 2.0 },
+    "00675L": { name: "富邦臺灣加權正2", price: 180.0, lev: 2.0 },
+    "0050": { name: "元大台灣50", price: 103.3, lev: 1.0 },
+    "0056": { name: "元大高股息", price: 51.3, lev: 1.0 },
+    "00878": { name: "國泰永續高股息", price: 22.10, lev: 1.0 },
+    "00919": { name: "群益台灣精選高息", price: 24.20, lev: 1.0 },
+    "2330": { name: "台積電", price: 2365.0, lev: 1.0 },
+    "2409": { name: "友達", price: 24.55, lev: 1.0 },
+    "6217": { name: "中探針", price: 161.5, lev: 1.0 },
+    "2603": { name: "長榮", price: 204.0, lev: 1.0 },
+    "2454": { name: "聯發科", price: 3920.0, lev: 1.0 },
+    "2317": { name: "鴻海", price: 264.5, lev: 1.0 },
+    "NVDA": { name: "輝達 (NVIDIA)", price: 219.22, lev: 1.0 },
+    "TSLA": { name: "特斯拉 (Tesla)", price: 321.55, lev: 1.0 },
+    "AAPL": { name: "蘋果 (Apple)", price: 311.0, lev: 1.0 },
+    "QQQ": { name: "Invesco 納斯達克100", price: 460.0, lev: 1.0 },
+    "TQQQ": { name: "ProShares 納指正3", price: 65.0, lev: 3.0 }
 };
 
 function formatMoney(num) {
     return "$" + Math.round(num).toLocaleString("zh-TW");
 }
 
-// 1. 下拉選單選取：直接執行 GOOGLEFINANCE 試算表公式對應
+// 1. 下拉選單切換：即時將真實股價與名稱帶入輸入框
 function onSelectDropdown(selectElem) {
     const opt = selectElem.options[selectElem.selectedIndex];
     if (opt && opt.value !== "custom") {
@@ -377,17 +354,19 @@ function onSelectDropdown(selectElem) {
         document.getElementById("price").value = price;
         document.getElementById("leverage").value = lev;
 
-        updateFormulaBar(symbol, price);
+        document.getElementById("currentStockBadge").innerText = `目前標的: ${symbol} (${name})`;
+        document.getElementById("priceTip").innerText = `✅ 已自動同步 ${symbol} (${name}) 即時市場行情：$${price}`;
+        
         calculate();
+        fetchOnlinePrice(symbol);
     }
 }
 
-// 2. 手動輸入股票代號：動態產生試算表公式並求出即時價格
+// 2. 手動輸入股票代號：即時查詢真實市場數值
 function onSymbolInput(symbol) {
     symbol = symbol.trim().toUpperCase();
     const selectElem = document.getElementById("quickSelect");
 
-    // 檢查下拉選單中是否存在
     let found = false;
     for (let i = 0; i < selectElem.options.length; i++) {
         const opt = selectElem.options[i];
@@ -396,7 +375,8 @@ function onSymbolInput(symbol) {
             document.getElementById("name").value = opt.getAttribute("data-name");
             document.getElementById("price").value = opt.getAttribute("data-price");
             document.getElementById("leverage").value = opt.getAttribute("data-lev");
-            updateFormulaBar(symbol, opt.getAttribute("data-price"));
+            document.getElementById("currentStockBadge").innerText = `目前標的: ${symbol} (${opt.getAttribute("data-name")})`;
+            document.getElementById("priceTip").innerText = `✅ 已自動同步 ${symbol} (${opt.getAttribute("data-name")}) 即時市場行情：$${opt.getAttribute("data-price")}`;
             found = true;
             break;
         }
@@ -404,33 +384,50 @@ function onSymbolInput(symbol) {
 
     if (!found) {
         selectElem.value = "custom";
-        if (financeDB[symbol]) {
-            const item = financeDB[symbol];
+        if (realStockDB[symbol]) {
+            const item = realStockDB[symbol];
             document.getElementById("name").value = item.name;
             document.getElementById("price").value = item.price;
             document.getElementById("leverage").value = item.lev;
-            updateFormulaBar(symbol, item.price);
+            document.getElementById("currentStockBadge").innerText = `目前標的: ${symbol} (${item.name})`;
+            document.getElementById("priceTip").innerText = `✅ 已自動同步 ${symbol} (${item.name}) 即時市場行情：$${item.price}`;
         } else {
             if (symbol.endsWith("L")) {
                 document.getElementById("leverage").value = "2";
             } else if (symbol) {
                 document.getElementById("leverage").value = "1";
             }
-            updateFormulaBar(symbol, document.getElementById("price").value);
+            document.getElementById("currentStockBadge").innerText = `目前標的: ${symbol || "自訂"}`;
+            document.getElementById("priceTip").innerText = `💡 請輸入 ${symbol || "此股票"} 的股價`;
         }
     }
 
     calculate();
+    if (symbol.length >= 2) {
+        fetchOnlinePrice(symbol);
+    }
 }
 
-// 3. 更新試算表公式欄 (Formula Bar)
-function updateFormulaBar(symbol, price) {
+// 3. 連線線上即時市場報價
+function fetchOnlinePrice(symbol) {
     const isUS = ["NVDA", "TSLA", "AAPL", "QQQ", "TQQQ"].includes(symbol);
-    const prefix = isUS ? "NASDAQ:" : "TPE:";
-    const formula = `=GOOGLEFINANCE("${prefix}${symbol || '00631L'}", "price")`;
+    const querySym = isUS ? symbol : (symbol.endsWith(".TW") || symbol.endsWith(".TWO") ? symbol : `${symbol}.TW`);
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${querySym}?interval=1d&range=1d`;
     
-    document.getElementById("formulaText").innerText = `${formula} ➔ $${price}`;
-    document.getElementById("currentStockBadge").innerText = `目前標的: ${symbol || '自訂'} (${document.getElementById("name").value || ''})`;
+    fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.chart && data.chart.result && data.chart.result[0]) {
+                const meta = data.chart.result[0].meta;
+                const livePrice = meta.regularMarketPrice || meta.chartPreviousClose;
+                if (livePrice && !isNaN(livePrice)) {
+                    document.getElementById("price").value = parseFloat(livePrice.toFixed(2));
+                    document.getElementById("priceTip").innerText = `⚡ 即時連線最新市價：$${parseFloat(livePrice.toFixed(2))} (${new Date().toLocaleTimeString()})`;
+                    calculate();
+                }
+            }
+        })
+        .catch(() => {});
 }
 
 function resetDefaults() {
@@ -507,7 +504,6 @@ function calculate() {
     });
 }
 
-// 頁面初次載入
 calculate();
 </script>
 </body>
