@@ -24,41 +24,90 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 15px;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
         h1 {
             text-align: center;
             color: #1a73e8;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+        }
+
+        .tab-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #495057;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 8px rgba(13,110,253,0.25);
         }
 
         .card {
             background: var(--card-bg);
             border-radius: 12px;
-            padding: 24px;
+            padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color);
         }
 
-        h2 {
-            font-size: 1.25rem;
-            margin-top: 0;
-            margin-bottom: 16px;
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 8px;
-            color: #495057;
+        .sheet-container {
+            width: 100%;
+            height: 700px;
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        .sheet-header-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 12px;
             flex-wrap: wrap;
             gap: 10px;
+        }
+
+        .btn-sheet-link {
+            background-color: #198754;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-sheet-link:hover {
+            background-color: #157347;
         }
 
         .form-grid {
@@ -79,41 +128,18 @@
             color: #495057;
         }
 
-        input, select {
+        input {
             padding: 10px 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             font-size: 1rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
             background-color: #fff;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(13,110,253,0.15);
         }
 
         .highlight-input {
             background-color: #fffde7 !important;
             border: 2px solid #fbc02d !important;
             font-weight: bold;
-        }
-
-        button.btn-reset {
-            background-color: #0d6efd;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: background-color 0.2s;
-        }
-
-        button.btn-reset:hover {
-            background-color: #0b5ed7;
         }
 
         .alert-box {
@@ -180,266 +206,137 @@
             color: #6c757d;
             margin-top: 4px;
         }
-
-        .symbol-badge {
-            background-color: #e7f5ff;
-            color: #1971c2;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.95rem;
-            margin-left: 6px;
-        }
-
-        .status-tag {
-            font-size: 0.8rem;
-            color: #198754;
-            margin-left: 8px;
-            font-weight: normal;
-        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 id="mainTitle">📊 正二曝險率與再平衡自動計算器</h1>
+    <h1>📊 正二曝險率與再平衡自動計算器</h1>
 
-    <div class="card">
-        <h2>
-            <span>1. 參數設定 <span id="currentStockBadge" class="symbol-badge">目前標的: 00631L (元大台灣50正2)</span><span id="dbStatus" class="status-tag">⚡ 內建+全台股OpenData支援</span></span>
-            <button class="btn-reset" onclick="resetDefaults()">🔄 重置預設數值</button>
-        </h2>
-        <div class="form-grid">
-            <div class="form-group">
-                <label>快速選擇熱門範例標的</label>
-                <select id="quickSelect" onchange="onQuickSelectChange()">
-                    <option value="custom">✏️ 手動輸入任意股票代號 (台股 / 美股 / ETF)</option>
-                    <option value="00631L" data-name="元大台灣50正2" data-price="34.15" data-lev="2.0">00631L - 元大台灣50正2 (2倍)</option>
-                    <option value="00685L" data-name="群益臺灣加權正2" data-price="250.0" data-lev="2.0">00685L - 群益臺灣加權正2 (2倍)</option>
-                    <option value="0050" data-name="元大台灣50" data-price="100.65" data-lev="1.0">0050 - 元大台灣50 (1倍)</option>
-                    <option value="0056" data-name="元大高股息" data-price="50.6" data-lev="1.0">0056 - 元大高股息 (1倍)</option>
-                    <option value="00878" data-name="國泰永續高股息" data-price="22.1" data-lev="1.0">00878 - 國泰永續高股息 (1倍)</option>
-                    <option value="00919" data-name="群益台灣精選高息" data-price="24.2" data-lev="1.0">00919 - 群益台灣精選高息 (1倍)</option>
-                    <option value="2330" data-name="台積電" data-price="2405.0" data-lev="1.0">2330 - 台積電 (1倍)</option>
-                </select>
+    <div class="tab-bar">
+        <button id="tabSheetBtn" class="tab-btn active" onclick="switchTab('sheet')">🌐 即時 Google 試算表 (GoogleFinance 自動即時報價)</button>
+        <button id="tabCalcBtn" class="tab-btn" onclick="switchTab('calc')">⚡ 快速離線計算器</button>
+    </div>
+
+    <!-- 模式 1：內嵌原始 Google 試算表（完整支援 GoogleFinance 即時報價） -->
+    <div id="tabSheetContent">
+        <div class="card">
+            <div class="sheet-header-actions">
+                <div>
+                    <strong>💡 即時 Google 試算表連線中</strong>
+                    <div style="font-size: 0.85rem; color: #6c757d;">支援 `=GOOGLEFINANCE` 自動抓取台股與全球股票最新價格</div>
+                </div>
+                <a href="https://docs.google.com/spreadsheets/d/1PLLmRLNknKMX2ZKGjzquP4_EhTpyQbKgxNN-Vxturuo/edit?gid=239384475#gid=239384475" target="_blank" class="btn-sheet-link">
+                    ↗️ 在 Google 試算表 App 中開啟與編輯
+                </a>
             </div>
-            <div class="form-group">
-                <label>股票代號 (支援任意代號，如 6217, 2603, NVDA)</label>
-                <input type="text" id="symbol" value="00631L" placeholder="輸入股票代號，如：6217、2603" class="highlight-input" oninput="onCustomInput()">
-            </div>
-            <div class="form-group">
-                <label>股票名稱</label>
-                <input type="text" id="name" value="元大台灣50正2" placeholder="例如：中探針、輝達" class="highlight-input" oninput="onCustomInput()">
-            </div>
-            <div class="form-group">
-                <label>目前股價 (元 / 美元)</label>
-                <input type="number" id="price" value="34.15" step="0.01" class="highlight-input" oninput="calculate()">
-                <span class="tip-text" id="priceTip">💡 已自動為您帶入市場報價或可自由修改</span>
-            </div>
-            <div class="form-group">
-                <label>目前持有股數 (股)</label>
-                <input type="number" id="shares" value="54000" step="1000" class="highlight-input" oninput="calculate()">
-                <span class="tip-text">例如：台股54張請填54000，美股100股填100</span>
-            </div>
-            <div class="form-group">
-                <label>槓桿倍數 (倍)</label>
-                <input type="number" id="leverage" value="2" step="0.1" class="highlight-input" oninput="calculate()">
-                <span class="tip-text">一般股票/ETF 填 1，正二填 2</span>
-            </div>
-            <div class="form-group">
-                <label>未使用資產 / 現金 (元 / 美元)</label>
-                <input type="number" id="cash" value="2000000" step="10000" class="highlight-input" oninput="calculate()">
-                <span class="tip-text">用於投資的閒置現金</span>
-            </div>
-            <div class="form-group">
-                <label>曝險率下限 (%)</label>
-                <input type="number" id="targetMin" value="80" oninput="calculate()">
-            </div>
-            <div class="form-group">
-                <label>曝險率中性標 (%)</label>
-                <input type="number" id="targetNeutral" value="100" oninput="calculate()">
-            </div>
-            <div class="form-group">
-                <label>曝險率上限 (%)</label>
-                <input type="number" id="targetMax" value="120" oninput="calculate()">
-            </div>
+            <iframe class="sheet-container" src="https://docs.google.com/spreadsheets/d/1PLLmRLNknKMX2ZKGjzquP4_EhTpyQbKgxNN-Vxturuo/htmlembed?gid=239384475&widget=true&headers=false"></iframe>
         </div>
     </div>
 
-    <div class="card">
-        <h2>2. 資產與曝險監控結果</h2>
-        <div class="stat-grid">
-            <div class="stat-card">
-                <div>目前持股市值</div>
-                <div class="stat-value" id="stockValue">$0</div>
-            </div>
-            <div class="stat-card">
-                <div>總資產 (現金+股票)</div>
-                <div class="stat-value" id="totalAssets">$0</div>
-            </div>
-            <div class="stat-card">
-                <div>實際曝險金額</div>
-                <div class="stat-value" id="actualExposure">$0</div>
-            </div>
-            <div class="stat-card">
-                <div>目前總曝險率</div>
-                <div class="stat-value" id="exposureRate">0%</div>
+    <!-- 模式 2：快速獨立計算器 -->
+    <div id="tabCalcContent" style="display: none;">
+        <div class="card">
+            <h2>1. 參數手動自訂</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>股票代號</label>
+                    <input type="text" id="symbol" value="00631L" class="highlight-input" oninput="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>股票名稱</label>
+                    <input type="text" id="name" value="元大台灣50正2" class="highlight-input" oninput="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>目前股價 (元)</label>
+                    <input type="number" id="price" value="34.15" step="0.01" class="highlight-input" oninput="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>目前持有股數 (股)</label>
+                    <input type="number" id="shares" value="54000" step="1000" class="highlight-input" oninput="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>槓桿倍數 (倍)</label>
+                    <input type="number" id="leverage" value="2" step="0.1" class="highlight-input" oninput="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>未使用資產 / 現金 (元)</label>
+                    <input type="number" id="cash" value="2000000" step="10000" class="highlight-input" oninput="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>曝險率下限 (%)</label>
+                    <input type="number" id="targetMin" value="80" oninput="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>曝險率中性標 (%)</label>
+                    <input type="number" id="targetNeutral" value="100" oninput="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>曝險率上限 (%)</label>
+                    <input type="number" id="targetMax" value="120" oninput="calculate()">
+                </div>
             </div>
         </div>
-        <div id="statusAlert" class="alert-box alert-success">🟢【保持觀望】部位在目標區間內</div>
-    </div>
 
-    <div class="card">
-        <h2>3. 再平衡目標與調整建議</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>再平衡目標</th>
-                    <th>目標持股市值</th>
-                    <th>建議調整金額</th>
-                    <th>建議調整張數/股數</th>
-                </tr>
-            </thead>
-            <tbody id="rebalanceBody">
-            </tbody>
-        </table>
+        <div class="card">
+            <h2>2. 資產與曝險監控結果</h2>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div>目前持股市值</div>
+                    <div class="stat-value" id="stockValue">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div>總資產 (現金+股票)</div>
+                    <div class="stat-value" id="totalAssets">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div>實際曝險金額</div>
+                    <div class="stat-value" id="actualExposure">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div>目前總曝險率</div>
+                    <div class="stat-value" id="exposureRate">0%</div>
+                </div>
+            </div>
+            <div id="statusAlert" class="alert-box alert-success">🟢【保持觀望】部位在目標區間內</div>
+        </div>
+
+        <div class="card">
+            <h2>3. 再平衡目標與調整建議</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>再平衡目標</th>
+                        <th>目標持股市值</th>
+                        <th>建議調整金額</th>
+                        <th>建議調整張數</th>
+                    </tr>
+                </thead>
+                <tbody id="rebalanceBody">
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
-let stockDatabase = {
-    "00631L": { name: "元大台灣50正2", price: 34.15, lev: 2.0 },
-    "00685L": { name: "群益臺灣加權正2", price: 250.0, lev: 2.0 },
-    "00675L": { name: "富邦臺灣加權正2", price: 180.0, lev: 2.0 },
-    "0050": { name: "元大台灣50", price: 100.65, lev: 1.0 },
-    "0056": { name: "元大高股息", price: 50.60, lev: 1.0 },
-    "00878": { name: "國泰永續高股息", price: 22.10, lev: 1.0 },
-    "00919": { name: "群益台灣精選高息", price: 24.20, lev: 1.0 },
-    "2330": { name: "台積電", price: 2405.0, lev: 1.0 },
-    "6217": { name: "中探針", price: 147.0, lev: 1.0 },
-    "2603": { name: "長榮", price: 185.5, lev: 1.0 },
-    "2454": { name: "聯發科", price: 1350.0, lev: 1.0 },
-    "2317": { name: "鴻海", price: 180.0, lev: 1.0 },
-    "NVDA": { name: "輝達 (NVIDIA)", price: 120.0, lev: 1.0 },
-    "TSLA": { name: "特斯拉 (Tesla)", price: 220.0, lev: 1.0 },
-    "AAPL": { name: "蘋果 (Apple)", price: 210.0, lev: 1.0 },
-    "QQQ": { name: "Invesco QQQ", price: 460.0, lev: 1.0 },
-    "TQQQ": { name: "ProShares 納斯達克正3", price: 65.0, lev: 3.0 },
-    "UPRO": { name: "ProShares 標普500正3", price: 70.0, lev: 3.0 }
-};
-
-async function loadFullStockDatabase() {
-    try {
-        const resTse = await fetch('https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL');
-        if (resTse.ok) {
-            const listTse = await resTse.json();
-            listTse.forEach(item => {
-                if (item.Code && item.ClosingPrice) {
-                    const code = item.Code.trim().toUpperCase();
-                    stockDatabase[code] = {
-                        name: item.Name ? item.Name.trim() : code,
-                        price: parseFloat(item.ClosingPrice) || 0,
-                        lev: code.endsWith('L') ? 2.0 : 1.0
-                    };
-                }
-            });
-        }
-        
-        const resOtc = await fetch('https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes');
-        if (resOtc.ok) {
-            const listOtc = await resOtc.json();
-            listOtc.forEach(item => {
-                const code = (item.SecuritiesCompanyCode || item.Code || '').trim().toUpperCase();
-                const price = parseFloat(item.Close) || 0;
-                if (code && price > 0) {
-                    stockDatabase[code] = {
-                        name: (item.CompanyName || code).trim(),
-                        price: price,
-                        lev: code.endsWith('L') ? 2.0 : 1.0
-                    };
-                }
-            });
-        }
-        const dbStatus = document.getElementById('dbStatus');
-        if (dbStatus) dbStatus.innerText = '⚡ 全台股 OpenData 已連線 (' + Object.keys(stockDatabase).length + '檔)';
-    } catch (e) {
-        console.log('使用內建資料庫');
+function switchTab(tab) {
+    if (tab === 'sheet') {
+        document.getElementById('tabSheetContent').style.display = 'block';
+        document.getElementById('tabCalcContent').style.display = 'none';
+        document.getElementById('tabSheetBtn').className = 'tab-btn active';
+        document.getElementById('tabCalcBtn').className = 'tab-btn';
+    } else {
+        document.getElementById('tabSheetContent').style.display = 'none';
+        document.getElementById('tabCalcContent').style.display = 'block';
+        document.getElementById('tabSheetBtn').className = 'tab-btn';
+        document.getElementById('tabCalcBtn').className = 'tab-btn active';
+        calculate();
     }
 }
 
 function formatMoney(num) {
     return '$' + Math.round(num).toLocaleString('zh-TW');
-}
-
-function onQuickSelectChange() {
-    const select = document.getElementById('quickSelect');
-    const val = select.value;
-    if (val !== 'custom') {
-        const option = select.options[select.selectedIndex];
-        document.getElementById('symbol').value = val;
-        document.getElementById('name').value = option.getAttribute('data-name');
-        document.getElementById('price').value = option.getAttribute('data-price');
-        document.getElementById('leverage').value = option.getAttribute('data-lev');
-    }
-    onCustomInput();
-}
-
-function onCustomInput() {
-    const symbol = document.getElementById('symbol').value.trim().toUpperCase();
-    const select = document.getElementById('quickSelect');
-    
-    if (stockDatabase[symbol]) {
-        const info = stockDatabase[symbol];
-        if (info.name) document.getElementById('name').value = info.name;
-        if (info.price > 0) document.getElementById('price').value = info.price;
-        if (info.lev) document.getElementById('leverage').value = info.lev;
-
-        const priceTip = document.getElementById('priceTip');
-        if (priceTip) {
-            priceTip.innerText = `✅ 已自動為您帶入 ${symbol} (${info.name}) 參考報價：$${info.price}`;
-        }
-    } else {
-        const priceTip = document.getElementById('priceTip');
-        if (priceTip) {
-            priceTip.innerText = `💡 請手動在上方欄位輸入 ${symbol || '此標的'} 的名稱與最新股價`;
-        }
-        if (symbol.endsWith('L')) {
-            document.getElementById('leverage').value = "2";
-        } else if (symbol) {
-            document.getElementById('leverage').value = "1";
-        }
-    }
-
-    let matched = false;
-    for (let i = 0; i < select.options.length; i++) {
-        if (select.options[i].value === symbol) {
-            select.selectedIndex = i;
-            matched = true;
-            break;
-        }
-    }
-    if (!matched) select.value = 'custom';
-
-    const badge = document.getElementById('currentStockBadge');
-    if (badge) {
-        const nameVal = document.getElementById('name').value;
-        badge.innerText = `目前標的: ${symbol || '自訂'} ${nameVal ? '(' + nameVal + ')' : ''}`;
-    }
-
-    calculate();
-}
-
-function resetDefaults() {
-    document.getElementById('quickSelect').selectedIndex = 1;
-    document.getElementById('symbol').value = "00631L";
-    document.getElementById('name').value = "元大台灣50正2";
-    document.getElementById('price').value = "34.15";
-    document.getElementById('shares').value = "54000";
-    document.getElementById('leverage').value = "2";
-    document.getElementById('cash').value = "2000000";
-    document.getElementById('targetMin').value = "80";
-    document.getElementById('targetNeutral').value = "100";
-    document.getElementById('targetMax').value = "120";
-    onCustomInput();
 }
 
 function calculate() {
@@ -497,14 +394,11 @@ function calculate() {
             <td>${t.label}</td>
             <td>${formatMoney(targetValue)}</td>
             <td class="${amtClass}">${amtSign}${formatMoney(adjustAmt)}</td>
-            <td class="${amtClass}">${sheetsSign}${adjustSheets} 張/股</td>
+            <td class="${amtClass}">${sheetsSign}${adjustSheets} 張</td>
         `;
         tbody.appendChild(tr);
     });
 }
-
-loadFullStockDatabase();
-calculate();
 </script>
 </body>
 </html>
