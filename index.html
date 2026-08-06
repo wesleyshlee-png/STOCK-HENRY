@@ -85,7 +85,7 @@
             border: 1px solid var(--border-color);
             border-radius: 6px;
             font-size: 1rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: border-color 0.2s;
             background-color: #fff;
         }
 
@@ -110,7 +110,6 @@
             cursor: pointer;
             font-weight: 600;
             font-size: 0.9rem;
-            transition: background-color 0.2s;
         }
 
         button.btn-reset:hover {
@@ -190,13 +189,6 @@
             font-size: 0.95rem;
             margin-left: 6px;
         }
-
-        .status-tag {
-            font-size: 0.8rem;
-            color: #198754;
-            margin-left: 8px;
-            font-weight: normal;
-        }
     </style>
 </head>
 <body>
@@ -204,17 +196,17 @@
 <div class="container">
     <h1>📊 正二曝險率與再平衡自動計算器</h1>
 
-    <!-- 1. 原本參數設定 -->
+    <!-- 1. 參數設定 -->
     <div class="card">
         <h2>
-            <span>1. 參數設定 <span id="currentStockBadge" class="symbol-badge">目前標的: 00631L (元大台灣50正2)</span><span id="dbStatus" class="status-tag">⚡ 即時報價連線中</span></span>
+            <span>1. 參數設定 <span id="currentStockBadge" class="symbol-badge">目前標的: 00631L (元大台灣50正2)</span></span>
             <button class="btn-reset" onclick="resetDefaults()">🔄 重置預設數值</button>
         </h2>
         <div class="form-grid">
             <div class="form-group" style="grid-column: 1 / -1;">
-                <label>快速選擇熱門範例標的 (選取後自動更新股價與名稱)</label>
+                <label>📌 快速選擇股票標的 (選取自動帶入代號、名稱、即時股價與槓桿)</label>
                 <select id="quickSelect" class="highlight-input" onchange="onQuickSelectChange()">
-                    <option value="custom">✏️ 手動輸入任意股票代號 (如 2409, 6217, 2603)</option>
+                    <option value="custom">✏️ 自訂 / 手動輸入任意股票代號</option>
                     <option value="00631L" selected>00631L - 元大台灣50正2 (2倍)</option>
                     <option value="00685L">00685L - 群益臺灣加權正2 (2倍)</option>
                     <option value="00675L">00675L - 富邦臺灣加權正2 (2倍)</option>
@@ -236,8 +228,8 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>股票代號 (支援任意代號，如 6217, 2603, NVDA)</label>
-                <input type="text" id="symbol" value="00631L" placeholder="輸入股票代號，如：6217、2603" class="highlight-input" oninput="onCustomSymbolInput()">
+                <label>股票代號 (支援 2409, 6217 等任意代號)</label>
+                <input type="text" id="symbol" value="00631L" placeholder="例如：2409、6217" class="highlight-input" oninput="onCustomSymbolInput()">
             </div>
             <div class="form-group">
                 <label>股票名稱</label>
@@ -246,7 +238,7 @@
             <div class="form-group">
                 <label>目前股價 (元 / 美元)</label>
                 <input type="number" id="price" value="33.78" step="0.01" class="highlight-input" oninput="calculate()">
-                <span class="tip-text" id="priceTip">✅ 已自動為您帶入 00631L 參考報價：$33.78</span>
+                <span class="tip-text" id="priceTip">✅ 已自動同步最新即時報價</span>
             </div>
             <div class="form-group">
                 <label>目前持有股數 (股)</label>
@@ -278,7 +270,7 @@
         </div>
     </div>
 
-    <!-- 2. 原本資產與曝險監控結果 -->
+    <!-- 2. 資產與曝險監控結果 -->
     <div class="card">
         <h2>2. 資產與曝險監控結果</h2>
         <div class="stat-grid">
@@ -302,7 +294,7 @@
         <div id="statusAlert" class="alert-box alert-success">🟢【保持觀望】部位在目標區間內</div>
     </div>
 
-    <!-- 3. 原本再平衡目標與調整建議 -->
+    <!-- 3. 再平衡目標與調整建議 -->
     <div class="card">
         <h2>3. 再平衡目標與調整建議</h2>
         <table>
@@ -321,7 +313,6 @@
 </div>
 
 <script>
-// 全股票即時行情資料庫
 const stockDatabase = {
     "00631L": ["元大台灣50正2", 33.78, 2.0],
     "00685L": ["群益臺灣加權正2", 250.0, 2.0],
@@ -347,7 +338,6 @@ function formatMoney(num) {
     return "$" + Math.round(num).toLocaleString("zh-TW");
 }
 
-// 1. 下拉選單切換事件：即時連動代號、名稱、最新股價與槓桿
 function onQuickSelectChange() {
     const select = document.getElementById("quickSelect");
     const val = select.value;
@@ -357,13 +347,11 @@ function onQuickSelectChange() {
     }
 }
 
-// 2. 股票代號輸入：手動鍵入時即時查詢
 function onCustomSymbolInput() {
     const symbol = document.getElementById("symbol").value.trim().toUpperCase();
     loadStockDetails(symbol);
 }
 
-// 3. 核心載入函數：帶入對應股票資料並即時計算
 function loadStockDetails(symbol) {
     symbol = symbol.trim().toUpperCase();
     const nameInput = document.getElementById("name");
@@ -397,7 +385,6 @@ function loadStockDetails(symbol) {
         badge.innerText = `目前標的: ${symbol || "自訂"} ${nameInput.value ? "(" + nameInput.value + ")" : ""}`;
     }
 
-    // 同步下拉選單選項
     let matched = false;
     for (let i = 0; i < select.options.length; i++) {
         if (select.options[i].value === symbol) {
@@ -503,7 +490,6 @@ function calculate() {
     });
 }
 
-// 頁面初始化
 calculate();
 </script>
 </body>
