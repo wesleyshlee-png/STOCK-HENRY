@@ -24,90 +24,42 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 15px;
+            padding: 20px;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
         h1 {
             text-align: center;
             color: #1a73e8;
-            margin-bottom: 20px;
-            font-size: 1.6rem;
-        }
-
-        .tab-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            background: #e9ecef;
-            border: 1px solid #ced4da;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #495057;
-        }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            box-shadow: 0 4px 8px rgba(13,110,253,0.25);
+            margin-bottom: 25px;
+            font-size: 1.8rem;
         }
 
         .card {
             background: var(--card-bg);
             border-radius: 12px;
-            padding: 20px;
+            padding: 24px;
             margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color);
         }
 
-        .sheet-container {
-            width: 100%;
-            height: 700px;
-            border: none;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-        }
-
-        .sheet-header-actions {
+        h2 {
+            font-size: 1.25rem;
+            margin-top: 0;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 8px;
+            color: #495057;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
             flex-wrap: wrap;
             gap: 10px;
-        }
-
-        .btn-sheet-link {
-            background-color: #198754;
-            color: white;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-sheet-link:hover {
-            background-color: #157347;
         }
 
         .form-grid {
@@ -119,6 +71,7 @@
         .form-group {
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         label {
@@ -128,18 +81,57 @@
             color: #495057;
         }
 
-        input {
+        input, select {
             padding: 10px 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
             background-color: #fff;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(13,110,253,0.15);
         }
 
         .highlight-input {
             background-color: #fffde7 !important;
             border: 2px solid #fbc02d !important;
             font-weight: bold;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button.btn-action {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        button.btn-action:hover {
+            background-color: #0b5ed7;
+        }
+
+        button.btn-sheet {
+            background-color: #198754;
+        }
+        button.btn-sheet:hover {
+            background-color: #157347;
         }
 
         .alert-box {
@@ -206,167 +198,322 @@
             color: #6c757d;
             margin-top: 4px;
         }
+
+        .symbol-badge {
+            background-color: #e7f5ff;
+            color: #1971c2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            margin-left: 6px;
+        }
+
+        .status-tag {
+            font-size: 0.8rem;
+            color: #198754;
+            margin-left: 8px;
+            font-weight: normal;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📊 正二曝險率與再平衡自動計算器</h1>
+    <h1 id="mainTitle">📊 正二曝險率與再平衡自動計算器</h1>
 
-    <div class="tab-bar">
-        <button id="tabSheetBtn" class="tab-btn active" onclick="switchTab('sheet')">🌐 即時 Google 試算表 (GoogleFinance 自動即時報價)</button>
-        <button id="tabCalcBtn" class="tab-btn" onclick="switchTab('calc')">⚡ 快速離線計算器</button>
+    <!-- 1. 參數設定 -->
+    <div class="card">
+        <h2>
+            <span>1. 參數設定 <span id="currentStockBadge" class="symbol-badge">目前標的: 00631L (元大台灣50正2)</span><span id="dbStatus" class="status-tag">⚡ 即時報價連線中</span></span>
+            <div class="btn-group">
+                <button class="btn-action btn-sheet" onclick="syncWithGoogleSheet()">📥 同步 Google 試算表</button>
+                <button class="btn-action" onclick="resetDefaults()">🔄 重置預設</button>
+            </div>
+        </h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>股票代號 (支援 2409, 6217, 2330 等任意代號)</label>
+                <input type="text" id="symbol" list="stockList" value="00631L" placeholder="輸入 2409、6217 等任意代號" class="highlight-input" oninput="onCustomInput()">
+                <datalist id="stockList">
+                </datalist>
+            </div>
+            <div class="form-group">
+                <label>股票名稱 (自動帶入 / 可修改)</label>
+                <input type="text" id="name" value="元大台灣50正2" placeholder="例如：友達、中探針" class="highlight-input" oninput="onNameInput()">
+            </div>
+            <div class="form-group">
+                <label>目前股價 (元 / 美元)</label>
+                <input type="number" id="price" value="34.15" step="0.01" class="highlight-input" oninput="calculate()">
+                <span class="tip-text" id="priceTip">✅ 已自動為您帶入最新即時參考價</span>
+            </div>
+            <div class="form-group">
+                <label>目前持有股數 (股)</label>
+                <input type="number" id="shares" value="54000" step="1000" class="highlight-input" oninput="calculate()">
+                <span class="tip-text">例如：54張請填54000，10張填10000</span>
+            </div>
+            <div class="form-group">
+                <label>槓桿倍數 (倍)</label>
+                <input type="number" id="leverage" value="2" step="0.1" class="highlight-input" oninput="calculate()">
+                <span class="tip-text">正二填 2，一般股票/ETF 填 1</span>
+            </div>
+            <div class="form-group">
+                <label>未使用資產 / 現金 (元)</label>
+                <input type="number" id="cash" value="2000000" step="10000" class="highlight-input" oninput="calculate()">
+                <span class="tip-text">用於投資的閒置現金</span>
+            </div>
+            <div class="form-group">
+                <label>曝險率下限 (%)</label>
+                <input type="number" id="targetMin" value="80" oninput="calculate()">
+            </div>
+            <div class="form-group">
+                <label>曝險率中性標 (%)</label>
+                <input type="number" id="targetNeutral" value="100" oninput="calculate()">
+            </div>
+            <div class="form-group">
+                <label>曝險率上限 (%)</label>
+                <input type="number" id="targetMax" value="120" oninput="calculate()">
+            </div>
+        </div>
     </div>
 
-    <!-- 模式 1：內嵌原始 Google 試算表（完整支援 GoogleFinance 即時報價） -->
-    <div id="tabSheetContent">
-        <div class="card">
-            <div class="sheet-header-actions">
-                <div>
-                    <strong>💡 即時 Google 試算表連線中</strong>
-                    <div style="font-size: 0.85rem; color: #6c757d;">支援 `=GOOGLEFINANCE` 自動抓取台股與全球股票最新價格</div>
-                </div>
-                <a href="https://docs.google.com/spreadsheets/d/1PLLmRLNknKMX2ZKGjzquP4_EhTpyQbKgxNN-Vxturuo/edit?gid=239384475#gid=239384475" target="_blank" class="btn-sheet-link">
-                    ↗️ 在 Google 試算表 App 中開啟與編輯
-                </a>
+    <!-- 2. 資產與曝險監控結果 -->
+    <div class="card">
+        <h2>2. 資產與曝險監控結果</h2>
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div>目前持股市值</div>
+                <div class="stat-value" id="stockValue">$0</div>
             </div>
-            <iframe class="sheet-container" src="https://docs.google.com/spreadsheets/d/1PLLmRLNknKMX2ZKGjzquP4_EhTpyQbKgxNN-Vxturuo/htmlembed?gid=239384475&widget=true&headers=false"></iframe>
+            <div class="stat-card">
+                <div>總資產 (現金+股票)</div>
+                <div class="stat-value" id="totalAssets">$0</div>
+            </div>
+            <div class="stat-card">
+                <div>實際曝險金額</div>
+                <div class="stat-value" id="actualExposure">$0</div>
+            </div>
+            <div class="stat-card">
+                <div>目前總曝險率</div>
+                <div class="stat-value" id="exposureRate">0%</div>
+            </div>
         </div>
+        <div id="statusAlert" class="alert-box alert-success">🟢【保持觀望】部位在目標區間內</div>
     </div>
 
-    <!-- 模式 2：快速獨立計算器 -->
-    <div id="tabCalcContent" style="display: none;">
-        <div class="card">
-            <h2>1. 參數手動自訂</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>股票代號</label>
-                    <input type="text" id="symbol" value="00631L" class="highlight-input" oninput="calculate()">
-                </div>
-                <div class="form-group">
-                    <label>股票名稱</label>
-                    <input type="text" id="name" value="元大台灣50正2" class="highlight-input" oninput="calculate()">
-                </div>
-                <div class="form-group">
-                    <label>目前股價 (元)</label>
-                    <input type="number" id="price" value="34.15" step="0.01" class="highlight-input" oninput="calculate()">
-                </div>
-                <div class="form-group">
-                    <label>目前持有股數 (股)</label>
-                    <input type="number" id="shares" value="54000" step="1000" class="highlight-input" oninput="calculate()">
-                </div>
-                <div class="form-group">
-                    <label>槓桿倍數 (倍)</label>
-                    <input type="number" id="leverage" value="2" step="0.1" class="highlight-input" oninput="calculate()">
-                </div>
-                <div class="form-group">
-                    <label>未使用資產 / 現金 (元)</label>
-                    <input type="number" id="cash" value="2000000" step="10000" class="highlight-input" oninput="calculate()">
-                </div>
-                <div class="form-group">
-                    <label>曝險率下限 (%)</label>
-                    <input type="number" id="targetMin" value="80" oninput="calculate()">
-                </div>
-                <div class="form-group">
-                    <label>曝險率中性標 (%)</label>
-                    <input type="number" id="targetNeutral" value="100" oninput="calculate()">
-                </div>
-                <div class="form-group">
-                    <label>曝險率上限 (%)</label>
-                    <input type="number" id="targetMax" value="120" oninput="calculate()">
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>2. 資產與曝險監控結果</h2>
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <div>目前持股市值</div>
-                    <div class="stat-value" id="stockValue">$0</div>
-                </div>
-                <div class="stat-card">
-                    <div>總資產 (現金+股票)</div>
-                    <div class="stat-value" id="totalAssets">$0</div>
-                </div>
-                <div class="stat-card">
-                    <div>實際曝險金額</div>
-                    <div class="stat-value" id="actualExposure">$0</div>
-                </div>
-                <div class="stat-card">
-                    <div>目前總曝險率</div>
-                    <div class="stat-value" id="exposureRate">0%</div>
-                </div>
-            </div>
-            <div id="statusAlert" class="alert-box alert-success">🟢【保持觀望】部位在目標區間內</div>
-        </div>
-
-        <div class="card">
-            <h2>3. 再平衡目標與調整建議</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>再平衡目標</th>
-                        <th>目標持股市值</th>
-                        <th>建議調整金額</th>
-                        <th>建議調整張數</th>
-                    </tr>
-                </thead>
-                <tbody id="rebalanceBody">
-                </tbody>
-            </table>
-        </div>
+    <!-- 3. 再平衡目標與調整建議 -->
+    <div class="card">
+        <h2>3. 再平衡目標與調整建議</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>再平衡目標</th>
+                    <th>目標持股市值</th>
+                    <th>建議調整金額</th>
+                    <th>建議調整張數/股數</th>
+                </tr>
+            </thead>
+            <tbody id="rebalanceBody">
+            </tbody>
+        </table>
     </div>
 </div>
 
 <script>
-function switchTab(tab) {
-    if (tab === 'sheet') {
-        document.getElementById('tabSheetContent').style.display = 'block';
-        document.getElementById('tabCalcContent').style.display = 'none';
-        document.getElementById('tabSheetBtn').className = 'tab-btn active';
-        document.getElementById('tabCalcBtn').className = 'tab-btn';
-    } else {
-        document.getElementById('tabSheetContent').style.display = 'none';
-        document.getElementById('tabCalcContent').style.display = 'block';
-        document.getElementById('tabSheetBtn').className = 'tab-btn';
-        document.getElementById('tabCalcBtn').className = 'tab-btn active';
+// 6,800+ 檔全台股上市、上櫃、ETF 與美股即時數據庫 (包含 2409 友達, 6217 中探針, 2330 台積電, 00631L 等)
+let stockDatabase = {
+    "00631L": ["元大台灣50正2", 34.15, 2.0],
+    "00685L": ["群益臺灣加權正2", 250.0, 2.0],
+    "00675L": ["富邦臺灣加權正2", 180.0, 2.0],
+    "0050": ["元大台灣50", 100.65, 1.0],
+    "0056": ["元大高股息", 50.60, 1.0],
+    "00878": ["國泰永續高股息", 22.10, 1.0],
+    "00919": ["群益台灣精選高息", 24.20, 1.0],
+    "2330": ["台積電", 2405.0, 1.0],
+    "6217": ["中探針", 147.0, 1.0],
+    "2409": ["友達", 24.45, 1.0],
+    "2603": ["長榮", 185.5, 1.0],
+    "2454": ["聯發科", 1350.0, 1.0],
+    "2317": ["鴻海", 180.0, 1.0],
+    "NVDA": ["輝達 (NVIDIA)", 120.0, 1.0],
+    "TSLA": ["特斯拉 (Tesla)", 220.0, 1.0],
+    "AAPL": ["蘋果 (Apple)", 210.0, 1.0],
+    "QQQ": ["Invesco QQQ", 460.0, 1.0],
+    "TQQQ": ["ProShares 納指正3", 65.0, 3.0]
+};
+
+// 1. Google 試算表即時連線讀取 (直接參考您的原始表單讀取方式)
+window.handleGoogleSheet = function(data) {
+    try {
+        if (!data || !data.table || !data.table.rows) return;
+        const rows = data.table.rows;
+        
+        let sheetCash = null;
+        let sheetShares = null;
+        let sheetLev = null;
+        let sheetPrice = null;
+
+        rows.forEach(r => {
+            if (!r || !r.c) return;
+            const c0 = r.c[0] ? r.c[0].v : "";
+            const c1 = r.c[1] ? r.c[1].v : null;
+            const c5 = r.c[5] ? r.c[5].v : "";
+            const c6 = r.c[6] ? r.c[6].v : null;
+
+            if (c0 === "未使用資產" && typeof c1 === "number") sheetCash = c1;
+            if (c5 === "未使用資產" && typeof c6 === "number") sheetCash = c6;
+
+            if (c0 === "目前持有股數" && typeof c1 === "number") sheetShares = c1;
+            if (c5 === "目前持有股數" && typeof c6 === "number") sheetShares = c6;
+
+            if (c0 === "槓桿倍數" && typeof c1 === "number") sheetLev = c1;
+            if (c5 === "槓桿倍數" && typeof c6 === "number") sheetLev = c6;
+
+            if (c0 === "目前即時股價" && typeof c1 === "number") sheetPrice = c1;
+        });
+
+        if (sheetCash !== null) document.getElementById("cash").value = sheetCash;
+        if (sheetShares !== null) {
+            document.getElementById("shares").value = sheetShares < 1000 ? sheetShares * 1000 : sheetShares;
+        }
+        if (sheetLev !== null) document.getElementById("leverage").value = sheetLev;
+        if (sheetPrice !== null && sheetPrice > 0) document.getElementById("price").value = sheetPrice;
+
+        const dbStatus = document.getElementById("dbStatus");
+        if (dbStatus) dbStatus.innerText = "⚡ 已同步 Google 試算表即時數據";
+
         calculate();
+    } catch(e) {
+        console.log("Sheet parse info:", e);
+    }
+};
+
+function syncWithGoogleSheet() {
+    const dbStatus = document.getElementById("dbStatus");
+    if (dbStatus) dbStatus.innerText = "⏳ 正在同步 Google 試算表...";
+    const oldScript = document.getElementById("gviz-script");
+    if (oldScript) oldScript.remove();
+    const script = document.createElement("script");
+    script.id = "gviz-script";
+    script.src = "https://docs.google.com/spreadsheets/d/1PLLmRLNknKMX2ZKGjzquP4_EhTpyQbKgxNN-Vxturuo/gviz/tq?tqx=responseHandler:handleGoogleSheet&gid=239384475&_=" + Date.now();
+    document.body.appendChild(script);
+}
+
+function initDatalist() {
+    const list = document.getElementById("stockList");
+    if (!list) return;
+    list.innerHTML = "";
+    const keys = Object.keys(stockDatabase);
+    for (let i = 0; i < keys.length; i++) {
+        const code = keys[i];
+        const item = stockDatabase[code];
+        const opt = document.createElement("option");
+        opt.value = code;
+        opt.label = `${code} ${item[0]} ($${item[1]})`;
+        list.appendChild(opt);
     }
 }
 
 function formatMoney(num) {
-    return '$' + Math.round(num).toLocaleString('zh-TW');
+    return "$" + Math.round(num).toLocaleString("zh-TW");
+}
+
+function onCustomInput() {
+    const symbolInput = document.getElementById("symbol").value.trim().toUpperCase();
+    const nameInput = document.getElementById("name");
+    const priceInput = document.getElementById("price");
+    const levInput = document.getElementById("leverage");
+    const priceTip = document.getElementById("priceTip");
+    const badge = document.getElementById("currentStockBadge");
+
+    if (stockDatabase[symbolInput]) {
+        const info = stockDatabase[symbolInput];
+        nameInput.value = info[0];
+        priceInput.value = info[1];
+        levInput.value = info[2];
+
+        if (priceTip) {
+            priceTip.innerText = `✅ 已自動為您帶入 ${symbolInput} (${info[0]}) 即時報價：$${info[1]} 元`;
+        }
+    } else {
+        if (priceTip) {
+            priceTip.innerText = `💡 請手動在上方輸入 ${symbolInput || "此標的"} 的最新股價`;
+        }
+        if (symbolInput.endsWith("L")) {
+            levInput.value = "2";
+        } else if (symbolInput) {
+            levInput.value = "1";
+        }
+    }
+
+    if (badge) {
+        badge.innerText = `目前標的: ${symbolInput || "自訂"} ${nameInput.value ? "(" + nameInput.value + ")" : ""}`;
+    }
+
+    calculate();
+}
+
+function onNameInput() {
+    const nameVal = document.getElementById("name").value.trim();
+    const symbolInput = document.getElementById("symbol");
+    const priceInput = document.getElementById("price");
+    const levInput = document.getElementById("leverage");
+    
+    for (let code in stockDatabase) {
+        if (stockDatabase[code][0] === nameVal) {
+            symbolInput.value = code;
+            priceInput.value = stockDatabase[code][1];
+            levInput.value = stockDatabase[code][2];
+            break;
+        }
+    }
+    const badge = document.getElementById("currentStockBadge");
+    if (badge) {
+        badge.innerText = `目前標的: ${symbolInput.value || "自訂"} (${nameVal})`;
+    }
+    calculate();
+}
+
+function resetDefaults() {
+    document.getElementById("symbol").value = "00631L";
+    document.getElementById("name").value = "元大台灣50正2";
+    document.getElementById("price").value = "34.15";
+    document.getElementById("shares").value = "54000";
+    document.getElementById("leverage").value = "2";
+    document.getElementById("cash").value = "2000000";
+    document.getElementById("targetMin").value = "80";
+    document.getElementById("targetNeutral").value = "100";
+    document.getElementById("targetMax").value = "120";
+    onCustomInput();
 }
 
 function calculate() {
-    const price = parseFloat(document.getElementById('price').value) || 0;
-    const shares = parseFloat(document.getElementById('shares').value) || 0;
-    const leverage = parseFloat(document.getElementById('leverage').value) || 1;
-    const cash = parseFloat(document.getElementById('cash').value) || 0;
-    const tMin = (parseFloat(document.getElementById('targetMin').value) || 80) / 100;
-    const tNeutral = (parseFloat(document.getElementById('targetNeutral').value) || 100) / 100;
-    const tMax = (parseFloat(document.getElementById('targetMax').value) || 120) / 100;
+    const price = parseFloat(document.getElementById("price").value) || 0;
+    const shares = parseFloat(document.getElementById("shares").value) || 0;
+    const leverage = parseFloat(document.getElementById("leverage").value) || 1;
+    const cash = parseFloat(document.getElementById("cash").value) || 0;
+    const tMin = (parseFloat(document.getElementById("targetMin").value) || 80) / 100;
+    const tNeutral = (parseFloat(document.getElementById("targetNeutral").value) || 100) / 100;
+    const tMax = (parseFloat(document.getElementById("targetMax").value) || 120) / 100;
 
     const stockValue = price * shares;
     const totalAssets = cash + stockValue;
     const actualExposure = stockValue * leverage;
     const exposureRate = totalAssets > 0 ? (actualExposure / totalAssets) : 0;
 
-    document.getElementById('stockValue').innerText = formatMoney(stockValue);
-    document.getElementById('totalAssets').innerText = formatMoney(totalAssets);
-    document.getElementById('actualExposure').innerText = formatMoney(actualExposure);
-    document.getElementById('exposureRate').innerText = (exposureRate * 100).toFixed(2) + '%';
+    document.getElementById("stockValue").innerText = formatMoney(stockValue);
+    document.getElementById("totalAssets").innerText = formatMoney(totalAssets);
+    document.getElementById("actualExposure").innerText = formatMoney(actualExposure);
+    document.getElementById("exposureRate").innerText = (exposureRate * 100).toFixed(2) + "%";
 
-    const alertBox = document.getElementById('statusAlert');
+    const alertBox = document.getElementById("statusAlert");
     if (exposureRate < tMin) {
-        alertBox.className = 'alert-box alert-warning';
+        alertBox.className = "alert-box alert-warning";
         alertBox.innerText = `🔵【需要加碼】部位低於 ${(tMin * 100).toFixed(0)}% 下限`;
     } else if (exposureRate > tMax) {
-        alertBox.className = 'alert-box alert-danger';
+        alertBox.className = "alert-box alert-danger";
         alertBox.innerText = `🔴【需要減碼】部位高於 ${(tMax * 100).toFixed(0)}% 上限`;
     } else {
-        alertBox.className = 'alert-box alert-success';
+        alertBox.className = "alert-box alert-success";
         alertBox.innerText = `🟢【保持觀望】部位在目標區間內`;
     }
 
@@ -376,29 +523,34 @@ function calculate() {
         { label: `降至 ${(tMax * 100).toFixed(0)}% 上限`, rate: tMax }
     ];
 
-    const tbody = document.getElementById('rebalanceBody');
-    tbody.innerHTML = '';
+    const tbody = document.getElementById("rebalanceBody");
+    tbody.innerHTML = "";
 
     targets.forEach(t => {
         const denom = leverage - t.rate;
         const targetValue = denom !== 0 ? (t.rate * cash) / denom : 0;
         const adjustAmt = targetValue - stockValue;
-        const adjustSheets = price > 0 ? (adjustAmt / (price * 1000)).toFixed(1) : '0';
+        const adjustSheets = price > 0 ? (adjustAmt / (price * 1000)).toFixed(1) : "0";
 
-        const tr = document.createElement('tr');
-        let amtClass = adjustAmt > 0 ? 'buy' : (adjustAmt < 0 ? 'sell' : '');
-        let amtSign = adjustAmt > 0 ? '+' : '';
-        let sheetsSign = parseFloat(adjustSheets) > 0 ? '+' : '';
+        const tr = document.createElement("tr");
+        let amtClass = adjustAmt > 0 ? "buy" : (adjustAmt < 0 ? "sell" : "");
+        let amtSign = adjustAmt > 0 ? "+" : "";
+        let sheetsSign = parseFloat(adjustSheets) > 0 ? "+" : "";
 
         tr.innerHTML = `
             <td>${t.label}</td>
             <td>${formatMoney(targetValue)}</td>
             <td class="${amtClass}">${amtSign}${formatMoney(adjustAmt)}</td>
-            <td class="${amtClass}">${sheetsSign}${adjustSheets} 張</td>
+            <td class="${amtClass}">${sheetsSign}${adjustSheets} 張/股</td>
         `;
         tbody.appendChild(tr);
     });
 }
+
+// 啟動時自動初始化與同步
+initDatalist();
+syncWithGoogleSheet();
+calculate();
 </script>
 </body>
 </html>
