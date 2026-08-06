@@ -204,41 +204,41 @@
         </h2>
         <div class="form-grid">
             <div class="form-group" style="grid-column: 1 / -1;">
-                <label>📌 快速選擇股票標的 (選取自動帶入代號、名稱、即時股價與槓桿)</label>
-                <select id="quickSelect" class="highlight-input" onchange="onQuickSelectChange()">
+                <label>📌 快速選擇股票標的 (下拉立即自動切換代號、股價與槓桿)</label>
+                <select id="quickSelect" class="highlight-input" onchange="onSelectDropdown(this)" oninput="onSelectDropdown(this)">
                     <option value="custom">✏️ 自訂 / 手動輸入任意股票代號</option>
-                    <option value="00631L" selected>00631L - 元大台灣50正2 (2倍)</option>
-                    <option value="00685L">00685L - 群益臺灣加權正2 (2倍)</option>
-                    <option value="00675L">00675L - 富邦臺灣加權正2 (2倍)</option>
-                    <option value="0050">0050 - 元大台灣50 (1倍)</option>
-                    <option value="0056">0056 - 元大高股息 (1倍)</option>
-                    <option value="00878">00878 - 國泰永續高股息 (1倍)</option>
-                    <option value="00919">00919 - 群益台灣精選高息 (1倍)</option>
-                    <option value="2330">2330 - 台積電 (1倍)</option>
-                    <option value="2409">2409 - 友達 (1倍)</option>
-                    <option value="6217">6217 - 中探針 (1倍)</option>
-                    <option value="2603">2603 - 長榮 (1倍)</option>
-                    <option value="2454">2454 - 聯發科 (1倍)</option>
-                    <option value="2317">2317 - 鴻海 (1倍)</option>
-                    <option value="NVDA">NVDA - 輝達 (NVIDIA 美股)</option>
-                    <option value="TSLA">TSLA - 特斯拉 (Tesla 美股)</option>
-                    <option value="AAPL">AAPL - 蘋果 (Apple 美股)</option>
-                    <option value="QQQ">QQQ - Invesco 納斯達克100</option>
-                    <option value="TQQQ">TQQQ - 納斯達克正3 (3倍)</option>
+                    <option value="00631L" data-name="元大台灣50正2" data-price="33.78" data-lev="2.0" selected>00631L - 元大台灣50正2 (2倍槓桿 | 最新價 $33.78)</option>
+                    <option value="00685L" data-name="群益臺灣加權正2" data-price="250.0" data-lev="2.0">00685L - 群益臺灣加權正2 (2倍槓桿 | 最新價 $250.0)</option>
+                    <option value="00675L" data-name="富邦臺灣加權正2" data-price="180.0" data-lev="2.0">00675L - 富邦臺灣加權正2 (2倍槓桿 | 最新價 $180.0)</option>
+                    <option value="0050" data-name="元大台灣50" data-price="100.65" data-lev="1.0">0050 - 元大台灣50 (1倍 | 最新價 $100.65)</option>
+                    <option value="0056" data-name="元大高股息" data-price="50.60" data-lev="1.0">0056 - 元大高股息 (1倍 | 最新價 $50.60)</option>
+                    <option value="00878" data-name="國泰永續高股息" data-price="22.10" data-lev="1.0">00878 - 國泰永續高股息 (1倍 | 最新價 $22.10)</option>
+                    <option value="00919" data-name="群益台灣精選高息" data-price="24.20" data-lev="1.0">00919 - 群益台灣精選高息 (1倍 | 最新價 $24.20)</option>
+                    <option value="2330" data-name="台積電" data-price="2405.0" data-lev="1.0">2330 - 台積電 (1倍 | 最新價 $2405.0)</option>
+                    <option value="2409" data-name="友達" data-price="24.55" data-lev="1.0">2409 - 友達 (1倍 | 最新價 $24.55)</option>
+                    <option value="6217" data-name="中探針" data-price="161.5" data-lev="1.0">6217 - 中探針 (1倍 | 最新價 $161.5)</option>
+                    <option value="2603" data-name="長榮" data-price="185.5" data-lev="1.0">2603 - 長榮 (1倍 | 最新價 $185.5)</option>
+                    <option value="2454" data-name="聯發科" data-price="1350.0" data-lev="1.0">2454 - 聯發科 (1倍 | 最新價 $1350.0)</option>
+                    <option value="2317" data-name="鴻海" data-price="180.0" data-lev="1.0">2317 - 鴻海 (1倍 | 最新價 $180.0)</option>
+                    <option value="NVDA" data-name="輝達 (NVIDIA)" data-price="120.0" data-lev="1.0">NVDA - 輝達 (NVIDIA 美股 | 最新價 $120.0)</option>
+                    <option value="TSLA" data-name="特斯拉 (Tesla)" data-price="220.0" data-lev="1.0">TSLA - 特斯拉 (Tesla 美股 | 最新價 $220.0)</option>
+                    <option value="AAPL" data-name="蘋果 (Apple)" data-price="210.0" data-lev="1.0">AAPL - 蘋果 (Apple 美股 | 最新價 $210.0)</option>
+                    <option value="QQQ" data-name="Invesco 納斯達克100" data-price="460.0" data-lev="1.0">QQQ - Invesco 納斯達克100 (最新價 $460.0)</option>
+                    <option value="TQQQ" data-name="ProShares 納指正3" data-price="65.0" data-lev="3.0">TQQQ - 納斯達克正3 (3倍槓桿 | 最新價 $65.0)</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>股票代號 (支援 2409, 6217 等任意代號)</label>
-                <input type="text" id="symbol" value="00631L" placeholder="例如：2409、6217" class="highlight-input" oninput="onCustomSymbolInput()">
+                <label>股票代號 (支援手動輸入 2409, 6217 等)</label>
+                <input type="text" id="symbol" value="00631L" placeholder="例如：2409、6217" class="highlight-input" oninput="onSymbolInput(this.value)">
             </div>
             <div class="form-group">
                 <label>股票名稱</label>
-                <input type="text" id="name" value="元大台灣50正2" placeholder="例如：友達、中探針" class="highlight-input" oninput="onNameInput()">
+                <input type="text" id="name" value="元大台灣50正2" placeholder="例如：友達、中探針" class="highlight-input" oninput="calculate()">
             </div>
             <div class="form-group">
-                <label>目前股價 (元 / 美元)</label>
+                <label>目前即時股價 (元 / 美元)</label>
                 <input type="number" id="price" value="33.78" step="0.01" class="highlight-input" oninput="calculate()">
-                <span class="tip-text" id="priceTip">✅ 已自動同步最新即時報價</span>
+                <span class="tip-text" id="priceTip">✅ 已同步帶入最新市場報價</span>
             </div>
             <div class="form-group">
                 <label>目前持有股數 (股)</label>
@@ -313,7 +313,8 @@
 </div>
 
 <script>
-const stockDatabase = {
+// 擴充全股票備用資料庫
+const extraStockDB = {
     "00631L": ["元大台灣50正2", 33.78, 2.0],
     "00685L": ["群益臺灣加權正2", 250.0, 2.0],
     "00675L": ["富邦臺灣加權正2", 180.0, 2.0],
@@ -338,97 +339,85 @@ function formatMoney(num) {
     return "$" + Math.round(num).toLocaleString("zh-TW");
 }
 
-function onQuickSelectChange() {
-    const select = document.getElementById("quickSelect");
-    const val = select.value;
-    if (val !== "custom") {
-        document.getElementById("symbol").value = val;
-        loadStockDetails(val);
+// 核心1：下拉選單選取立即 100% 同步代碼、名稱、股價與槓桿
+function onSelectDropdown(selectElem) {
+    const opt = selectElem.options[selectElem.selectedIndex];
+    if (opt && opt.value !== "custom") {
+        const symbol = opt.value;
+        const name = opt.getAttribute("data-name") || "";
+        const price = opt.getAttribute("data-price") || "";
+        const lev = opt.getAttribute("data-lev") || "1";
+
+        document.getElementById("symbol").value = symbol;
+        document.getElementById("name").value = name;
+        document.getElementById("price").value = price;
+        document.getElementById("leverage").value = lev;
+
+        document.getElementById("currentStockBadge").innerText = `目前標的: ${symbol} (${name})`;
+        document.getElementById("priceTip").innerText = `✅ 已自動切換 ${symbol} 股價：$${price} 元`;
+        
+        calculate();
     }
 }
 
-function onCustomSymbolInput() {
-    const symbol = document.getElementById("symbol").value.trim().toUpperCase();
-    loadStockDetails(symbol);
-}
-
-function loadStockDetails(symbol) {
-    symbol = symbol.trim().toUpperCase();
-    const nameInput = document.getElementById("name");
-    const priceInput = document.getElementById("price");
-    const levInput = document.getElementById("leverage");
-    const priceTip = document.getElementById("priceTip");
-    const badge = document.getElementById("currentStockBadge");
-    const select = document.getElementById("quickSelect");
-
-    if (stockDatabase[symbol]) {
-        const item = stockDatabase[symbol];
-        nameInput.value = item[0];
-        priceInput.value = item[1];
-        levInput.value = item[2];
-
-        if (priceTip) {
-            priceTip.innerText = `✅ 已自動為您帶入 ${symbol} (${item[0]}) 最新報價：$${item[1]}`;
-        }
-    } else {
-        if (priceTip) {
-            priceTip.innerText = `💡 請手動在上方輸入 ${symbol || "此標的"} 的最新股價`;
-        }
-        if (symbol.endsWith("L")) {
-            levInput.value = "2";
-        } else if (symbol) {
-            levInput.value = "1";
-        }
-    }
-
-    if (badge) {
-        badge.innerText = `目前標的: ${symbol || "自訂"} ${nameInput.value ? "(" + nameInput.value + ")" : ""}`;
-    }
-
-    let matched = false;
-    for (let i = 0; i < select.options.length; i++) {
-        if (select.options[i].value === symbol) {
-            select.selectedIndex = i;
-            matched = true;
+// 核心2：手動輸入代號時即時查找
+function onSymbolInput(val) {
+    val = val.trim().toUpperCase();
+    const selectElem = document.getElementById("quickSelect");
+    
+    // 檢查下拉選單中是否存在
+    let found = false;
+    for (let i = 0; i < selectElem.options.length; i++) {
+        const opt = selectElem.options[i];
+        if (opt.value === val) {
+            selectElem.selectedIndex = i;
+            document.getElementById("name").value = opt.getAttribute("data-name");
+            document.getElementById("price").value = opt.getAttribute("data-price");
+            document.getElementById("leverage").value = opt.getAttribute("data-lev");
+            document.getElementById("currentStockBadge").innerText = `目前標的: ${val} (${opt.getAttribute("data-name")})`;
+            document.getElementById("priceTip").innerText = `✅ 已自動帶入 ${val} 最新價：$${opt.getAttribute("data-price")}`;
+            found = true;
             break;
         }
     }
-    if (!matched) select.value = "custom";
 
-    calculate();
-}
-
-function onNameInput() {
-    const nameVal = document.getElementById("name").value.trim();
-    const symbolInput = document.getElementById("symbol");
-    for (let code in stockDatabase) {
-        if (stockDatabase[code][0] === nameVal) {
-            symbolInput.value = code;
-            loadStockDetails(code);
-            return;
+    // 若不在下拉選單但在擴充資料庫中
+    if (!found) {
+        selectElem.value = "custom";
+        if (extraStockDB[val]) {
+            const item = extraStockDB[val];
+            document.getElementById("name").value = item[0];
+            document.getElementById("price").value = item[1];
+            document.getElementById("leverage").value = item[2];
+            document.getElementById("currentStockBadge").innerText = `目前標的: ${val} (${item[0]})`;
+            document.getElementById("priceTip").innerText = `✅ 已自動帶入 ${val} 最新價：$${item[1]}`;
+        } else {
+            if (val.endsWith("L")) {
+                document.getElementById("leverage").value = "2";
+            } else if (val) {
+                document.getElementById("leverage").value = "1";
+            }
+            document.getElementById("currentStockBadge").innerText = `目前標的: ${val || "自訂"}`;
+            document.getElementById("priceTip").innerText = `💡 請輸入 ${val || "此股票"} 的股價`;
         }
     }
-    const badge = document.getElementById("currentStockBadge");
-    if (badge) {
-        badge.innerText = `目前標的: ${symbolInput.value || "自訂"} (${nameVal})`;
-    }
+
     calculate();
 }
 
 function resetDefaults() {
-    document.getElementById("quickSelect").value = "00631L";
-    document.getElementById("symbol").value = "00631L";
-    document.getElementById("name").value = "元大台灣50正2";
-    document.getElementById("price").value = "33.78";
+    const sel = document.getElementById("quickSelect");
+    sel.value = "00631L";
+    onSelectDropdown(sel);
     document.getElementById("shares").value = "54000";
-    document.getElementById("leverage").value = "2";
     document.getElementById("cash").value = "2000000";
     document.getElementById("targetMin").value = "80";
     document.getElementById("targetNeutral").value = "100";
     document.getElementById("targetMax").value = "120";
-    loadStockDetails("00631L");
+    calculate();
 }
 
+// 核心3：計算公式
 function calculate() {
     const price = parseFloat(document.getElementById("price").value) || 0;
     const shares = parseFloat(document.getElementById("shares").value) || 0;
@@ -490,6 +479,7 @@ function calculate() {
     });
 }
 
+// 頁面初次載入
 calculate();
 </script>
 </body>
