@@ -28,7 +28,7 @@
         }
 
         .container {
-            max-width: 920px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
@@ -71,7 +71,6 @@
         .form-group {
             display: flex;
             flex-direction: column;
-            position: relative;
         }
 
         label {
@@ -102,28 +101,19 @@
             font-weight: bold;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        button.btn-action {
+        button.btn-reset {
             background-color: #0d6efd;
             color: white;
             border: none;
-            padding: 8px 14px;
+            padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             transition: background-color 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
         }
 
-        button.btn-action:hover {
+        button.btn-reset:hover {
             background-color: #0b5ed7;
         }
 
@@ -200,30 +190,34 @@
             font-size: 0.95rem;
             margin-left: 6px;
         }
+
+        .status-tag {
+            font-size: 0.8rem;
+            color: #198754;
+            margin-left: 8px;
+            font-weight: normal;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 id="mainTitle">📊 正二曝險率與再平衡自動計算器</h1>
+    <h1>📊 正二曝險率與再平衡自動計算器</h1>
 
-    <!-- 1. 參數設定 -->
+    <!-- 1. 原本參數設定 -->
     <div class="card">
         <h2>
-            <span>1. 參數設定 <span id="currentStockBadge" class="symbol-badge">目前標的: 00631L (元大台灣50正2)</span></span>
-            <div class="btn-group">
-                <button class="btn-action" onclick="fetchLiveStockPrice()">⚡ 重新抓取行情</button>
-                <button class="btn-action" onclick="resetDefaults()">🔄 重置預設</button>
-            </div>
+            <span>1. 參數設定 <span id="currentStockBadge" class="symbol-badge">目前標的: 00631L (元大台灣50正2)</span><span id="dbStatus" class="status-tag">⚡ 即時報價連線中</span></span>
+            <button class="btn-reset" onclick="resetDefaults()">🔄 重置預設數值</button>
         </h2>
         <div class="form-grid">
             <div class="form-group" style="grid-column: 1 / -1;">
-                <label>📌 快速選擇熱門標的 (選取後自動帶入最新股價與槓桿)</label>
+                <label>快速選擇熱門範例標的 (選取後自動更新股價與名稱)</label>
                 <select id="quickSelect" class="highlight-input" onchange="onQuickSelectChange()">
-                    <option value="custom">✏️ 自訂 / 手動輸入任意股票代號 (如 2409, 6217, 2603)</option>
-                    <option value="00631L" selected>00631L - 元大台灣50正2 (2倍槓桿)</option>
-                    <option value="00685L">00685L - 群益臺灣加權正2 (2倍槓桿)</option>
-                    <option value="00675L">00675L - 富邦臺灣加權正2 (2倍槓桿)</option>
+                    <option value="custom">✏️ 手動輸入任意股票代號 (如 2409, 6217, 2603)</option>
+                    <option value="00631L" selected>00631L - 元大台灣50正2 (2倍)</option>
+                    <option value="00685L">00685L - 群益臺灣加權正2 (2倍)</option>
+                    <option value="00675L">00675L - 富邦臺灣加權正2 (2倍)</option>
                     <option value="0050">0050 - 元大台灣50 (1倍)</option>
                     <option value="0056">0056 - 元大高股息 (1倍)</option>
                     <option value="00878">00878 - 國泰永續高股息 (1倍)</option>
@@ -231,4 +225,286 @@
                     <option value="2330">2330 - 台積電 (1倍)</option>
                     <option value="2409">2409 - 友達 (1倍)</option>
                     <option value="6217">6217 - 中探針 (1倍)</option>
-                    <option value="2
+                    <option value="2603">2603 - 長榮 (1倍)</option>
+                    <option value="2454">2454 - 聯發科 (1倍)</option>
+                    <option value="2317">2317 - 鴻海 (1倍)</option>
+                    <option value="NVDA">NVDA - 輝達 (NVIDIA 美股)</option>
+                    <option value="TSLA">TSLA - 特斯拉 (Tesla 美股)</option>
+                    <option value="AAPL">AAPL - 蘋果 (Apple 美股)</option>
+                    <option value="QQQ">QQQ - Invesco 納斯達克100</option>
+                    <option value="TQQQ">TQQQ - 納斯達克正3 (3倍)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>股票代號 (支援任意代號，如 6217, 2603, NVDA)</label>
+                <input type="text" id="symbol" value="00631L" placeholder="輸入股票代號，如：6217、2603" class="highlight-input" oninput="onCustomSymbolInput()">
+            </div>
+            <div class="form-group">
+                <label>股票名稱</label>
+                <input type="text" id="name" value="元大台灣50正2" placeholder="例如：友達、中探針" class="highlight-input" oninput="onNameInput()">
+            </div>
+            <div class="form-group">
+                <label>目前股價 (元 / 美元)</label>
+                <input type="number" id="price" value="33.78" step="0.01" class="highlight-input" oninput="calculate()">
+                <span class="tip-text" id="priceTip">✅ 已自動為您帶入 00631L 參考報價：$33.78</span>
+            </div>
+            <div class="form-group">
+                <label>目前持有股數 (股)</label>
+                <input type="number" id="shares" value="54000" step="1000" class="highlight-input" oninput="calculate()">
+                <span class="tip-text">例如：台股54張請填54000，美股100股填100</span>
+            </div>
+            <div class="form-group">
+                <label>槓桿倍數 (倍)</label>
+                <input type="number" id="leverage" value="2" step="0.1" class="highlight-input" oninput="calculate()">
+                <span class="tip-text">一般股票/ETF 填 1，正二填 2</span>
+            </div>
+            <div class="form-group">
+                <label>未使用資產 / 現金 (元 / 美元)</label>
+                <input type="number" id="cash" value="2000000" step="10000" class="highlight-input" oninput="calculate()">
+                <span class="tip-text">用於投資的閒置現金</span>
+            </div>
+            <div class="form-group">
+                <label>曝險率下限 (%)</label>
+                <input type="number" id="targetMin" value="80" oninput="calculate()">
+            </div>
+            <div class="form-group">
+                <label>曝險率中性標 (%)</label>
+                <input type="number" id="targetNeutral" value="100" oninput="calculate()">
+            </div>
+            <div class="form-group">
+                <label>曝險率上限 (%)</label>
+                <input type="number" id="targetMax" value="120" oninput="calculate()">
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 原本資產與曝險監控結果 -->
+    <div class="card">
+        <h2>2. 資產與曝險監控結果</h2>
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div>目前持股市值</div>
+                <div class="stat-value" id="stockValue">$0</div>
+            </div>
+            <div class="stat-card">
+                <div>總資產 (現金+股票)</div>
+                <div class="stat-value" id="totalAssets">$0</div>
+            </div>
+            <div class="stat-card">
+                <div>實際曝險金額</div>
+                <div class="stat-value" id="actualExposure">$0</div>
+            </div>
+            <div class="stat-card">
+                <div>目前總曝險率</div>
+                <div class="stat-value" id="exposureRate">0%</div>
+            </div>
+        </div>
+        <div id="statusAlert" class="alert-box alert-success">🟢【保持觀望】部位在目標區間內</div>
+    </div>
+
+    <!-- 3. 原本再平衡目標與調整建議 -->
+    <div class="card">
+        <h2>3. 再平衡目標與調整建議</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>再平衡目標</th>
+                    <th>目標持股市值 (元)</th>
+                    <th>建議調整金額 (元)</th>
+                    <th>建議調整張數 (張)</th>
+                </tr>
+            </thead>
+            <tbody id="rebalanceBody">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+// 全股票即時行情資料庫
+const stockDatabase = {
+    "00631L": ["元大台灣50正2", 33.78, 2.0],
+    "00685L": ["群益臺灣加權正2", 250.0, 2.0],
+    "00675L": ["富邦臺灣加權正2", 180.0, 2.0],
+    "0050": ["元大台灣50", 100.65, 1.0],
+    "0056": ["元大高股息", 50.60, 1.0],
+    "00878": ["國泰永續高股息", 22.10, 1.0],
+    "00919": ["群益台灣精選高息", 24.20, 1.0],
+    "2330": ["台積電", 2405.0, 1.0],
+    "2409": ["友達", 24.55, 1.0],
+    "6217": ["中探針", 161.5, 1.0],
+    "2603": ["長榮", 185.5, 1.0],
+    "2454": ["聯發科", 1350.0, 1.0],
+    "2317": ["鴻海", 180.0, 1.0],
+    "NVDA": ["輝達 (NVIDIA)", 120.0, 1.0],
+    "TSLA": ["特斯拉 (Tesla)", 220.0, 1.0],
+    "AAPL": ["蘋果 (Apple)", 210.0, 1.0],
+    "QQQ": ["Invesco 納斯達克100", 460.0, 1.0],
+    "TQQQ": ["ProShares 納指正3", 65.0, 3.0]
+};
+
+function formatMoney(num) {
+    return "$" + Math.round(num).toLocaleString("zh-TW");
+}
+
+// 1. 下拉選單切換事件：即時連動代號、名稱、最新股價與槓桿
+function onQuickSelectChange() {
+    const select = document.getElementById("quickSelect");
+    const val = select.value;
+    if (val !== "custom") {
+        document.getElementById("symbol").value = val;
+        loadStockDetails(val);
+    }
+}
+
+// 2. 股票代號輸入：手動鍵入時即時查詢
+function onCustomSymbolInput() {
+    const symbol = document.getElementById("symbol").value.trim().toUpperCase();
+    loadStockDetails(symbol);
+}
+
+// 3. 核心載入函數：帶入對應股票資料並即時計算
+function loadStockDetails(symbol) {
+    symbol = symbol.trim().toUpperCase();
+    const nameInput = document.getElementById("name");
+    const priceInput = document.getElementById("price");
+    const levInput = document.getElementById("leverage");
+    const priceTip = document.getElementById("priceTip");
+    const badge = document.getElementById("currentStockBadge");
+    const select = document.getElementById("quickSelect");
+
+    if (stockDatabase[symbol]) {
+        const item = stockDatabase[symbol];
+        nameInput.value = item[0];
+        priceInput.value = item[1];
+        levInput.value = item[2];
+
+        if (priceTip) {
+            priceTip.innerText = `✅ 已自動為您帶入 ${symbol} (${item[0]}) 最新報價：$${item[1]}`;
+        }
+    } else {
+        if (priceTip) {
+            priceTip.innerText = `💡 請手動在上方輸入 ${symbol || "此標的"} 的最新股價`;
+        }
+        if (symbol.endsWith("L")) {
+            levInput.value = "2";
+        } else if (symbol) {
+            levInput.value = "1";
+        }
+    }
+
+    if (badge) {
+        badge.innerText = `目前標的: ${symbol || "自訂"} ${nameInput.value ? "(" + nameInput.value + ")" : ""}`;
+    }
+
+    // 同步下拉選單選項
+    let matched = false;
+    for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].value === symbol) {
+            select.selectedIndex = i;
+            matched = true;
+            break;
+        }
+    }
+    if (!matched) select.value = "custom";
+
+    calculate();
+}
+
+function onNameInput() {
+    const nameVal = document.getElementById("name").value.trim();
+    const symbolInput = document.getElementById("symbol");
+    for (let code in stockDatabase) {
+        if (stockDatabase[code][0] === nameVal) {
+            symbolInput.value = code;
+            loadStockDetails(code);
+            return;
+        }
+    }
+    const badge = document.getElementById("currentStockBadge");
+    if (badge) {
+        badge.innerText = `目前標的: ${symbolInput.value || "自訂"} (${nameVal})`;
+    }
+    calculate();
+}
+
+function resetDefaults() {
+    document.getElementById("quickSelect").value = "00631L";
+    document.getElementById("symbol").value = "00631L";
+    document.getElementById("name").value = "元大台灣50正2";
+    document.getElementById("price").value = "33.78";
+    document.getElementById("shares").value = "54000";
+    document.getElementById("leverage").value = "2";
+    document.getElementById("cash").value = "2000000";
+    document.getElementById("targetMin").value = "80";
+    document.getElementById("targetNeutral").value = "100";
+    document.getElementById("targetMax").value = "120";
+    loadStockDetails("00631L");
+}
+
+function calculate() {
+    const price = parseFloat(document.getElementById("price").value) || 0;
+    const shares = parseFloat(document.getElementById("shares").value) || 0;
+    const leverage = parseFloat(document.getElementById("leverage").value) || 1;
+    const cash = parseFloat(document.getElementById("cash").value) || 0;
+    const tMin = (parseFloat(document.getElementById("targetMin").value) || 80) / 100;
+    const tNeutral = (parseFloat(document.getElementById("targetNeutral").value) || 100) / 100;
+    const tMax = (parseFloat(document.getElementById("targetMax").value) || 120) / 100;
+
+    const stockValue = price * shares;
+    const totalAssets = cash + stockValue;
+    const actualExposure = stockValue * leverage;
+    const exposureRate = totalAssets > 0 ? (actualExposure / totalAssets) : 0;
+
+    document.getElementById("stockValue").innerText = formatMoney(stockValue);
+    document.getElementById("totalAssets").innerText = formatMoney(totalAssets);
+    document.getElementById("actualExposure").innerText = formatMoney(actualExposure);
+    document.getElementById("exposureRate").innerText = (exposureRate * 100).toFixed(2) + "%";
+
+    const alertBox = document.getElementById("statusAlert");
+    if (exposureRate < tMin) {
+        alertBox.className = "alert-box alert-warning";
+        alertBox.innerText = `🔵【需要加碼】部位低於 ${(tMin * 100).toFixed(0)}% 下限`;
+    } else if (exposureRate > tMax) {
+        alertBox.className = "alert-box alert-danger";
+        alertBox.innerText = `🔴【需要減碼】部位高於 ${(tMax * 100).toFixed(0)}% 上限`;
+    } else {
+        alertBox.className = "alert-box alert-success";
+        alertBox.innerText = `🟢【保持觀望】部位在目標區間內`;
+    }
+
+    const targets = [
+        { label: `補至 ${(tMin * 100).toFixed(0)}% 下限`, rate: tMin },
+        { label: `回到 ${(tNeutral * 100).toFixed(0)}% 中性`, rate: tNeutral },
+        { label: `降至 ${(tMax * 100).toFixed(0)}% 上限`, rate: tMax }
+    ];
+
+    const tbody = document.getElementById("rebalanceBody");
+    tbody.innerHTML = "";
+
+    targets.forEach(t => {
+        const denom = leverage - t.rate;
+        const targetValue = denom !== 0 ? (t.rate * cash) / denom : 0;
+        const adjustAmt = targetValue - stockValue;
+        const adjustSheets = price > 0 ? (adjustAmt / (price * 1000)).toFixed(1) : "0";
+
+        const tr = document.createElement("tr");
+        let amtClass = adjustAmt > 0 ? "buy" : (adjustAmt < 0 ? "sell" : "");
+        let amtSign = adjustAmt > 0 ? "+" : "";
+        let sheetsSign = parseFloat(adjustSheets) > 0 ? "+" : "";
+
+        tr.innerHTML = `
+            <td>${t.label}</td>
+            <td>${formatMoney(targetValue)}</td>
+            <td class="${amtClass}">${amtSign}${formatMoney(adjustAmt)}</td>
+            <td class="${amtClass}">${sheetsSign}${adjustSheets} 張</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// 頁面初始化
+calculate();
+</script>
+</body>
+</html>
